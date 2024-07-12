@@ -1,0 +1,29 @@
+# This Docker Compose file sets up a WordPress site and a MySQL database. 
+# The MySQL service stores its data in a persistent volume. 
+# The WordPress service connects to the MySQL database using provided credentials and runs on port 80.
+
+services:
+  db:
+    image: mysql
+    volumes:
+      - data_db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    ports:
+      - "80:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+
+volumes:
+  data_db:
