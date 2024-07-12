@@ -10,7 +10,7 @@
 ## Setup: Ubuntu Server
 
 <p align="center">
-  <img src="image.png" alt="Ubuntu Server">
+  <img src="Ubuntu-Server-EC2.png" alt="Ubuntu Server">
 </p>
 
 - SSH into the EC2 VM using your local machine:
@@ -112,7 +112,7 @@ To reboot the EC2 instance, do it from the AWS Management Console.
 ### Open http://server-ip in your web browser.
 
 <p align="center">
-  <img src="image-1.png" alt="WordPress Setup Page" width="1000">
+  <img src="Launched-WordPress-Server.png" alt="WordPress Setup Page" width="1000">
 </p>
 
 
