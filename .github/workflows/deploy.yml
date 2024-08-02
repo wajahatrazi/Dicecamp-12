@@ -20,8 +20,12 @@ jobs:
 
       - name: Copy files to EC2
         run: |
-          scp -r Assignment\ 3/* ec2-user@<your-ec2-ip>:/var/www/html/
+          scp -r Assignment\ 3/* ubuntu@44.202.92.141:/var/www/html/
 
-      - name: Build and run Docker container
+      - name: Copy Docker Compose file to EC2
         run: |
-          ssh ec2-user@<your-ec2-ip> 'cd /var/www/html && docker build -t my-php-app . && docker run -d -p 80:80 my-php-app'
+          scp docker-compose.yml ubuntu@44.202.92.141:/var/www/html/
+
+      - name: Deploy with Docker Compose
+        run: |
+          ssh ubuntu  @44.202.92.141 'cd /var/www/html && docker-compose up -d --build'
