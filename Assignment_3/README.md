@@ -36,7 +36,7 @@ ubuntu@ip-172-31-89-167:~$ cd .ssh/
 ubuntu@ip-172-31-89-167:~/.ssh$ ls
 authorized_keys  id_rsa  id_rsa.pub
 ubuntu@ip-172-31-89-167:~/.ssh$ cat id_rsa.pub 
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCqi1j+nNG2517RGqO4qSHkS3Gllo+oKyiMfZoTBXro2FR+tivpI8ZLiI2VzMdy1Hfm1FKE7qsqvymiA6jzg3bOL5mIQdkwM2qio8iSnHQzJqMe/lQcTCg4qdhSMVvgcGaIa8sekluO2oN+9+Ga8Xkom8GWSwJ77M+yxUX46zdN5Bj2vWlFdyxawIjIPq5b9j+1CpG8GMZSP/aXTDZPGvhyVunH5oAIHDK/oCDjVbakmd6RwqzNoTx7bhfR+HuojQJxsKw1dqfPWrNX2pIYrcJea+FGjSISYDjwx8YCN1FVPJIaH0Rtzm+H5b9RAv2HI5Ze3nFxYVatz49ZWHsxg+gC6w2Xw6lV9hHzC5FYs2vcyLnjWG3YUyi85H828hGVAs+yi1xGhVJkgBT8L4+lFVDB/E8TVjgUAjDGEFEtmFpCRiYw6H3LICZNwwgQZWGLuJBbdJXkOHl9tX5l6DQl/MjkDDmSJpXpSJNDzIhCR9CXKQBORd/gxFbxVmK7jX55Mwr0lX3w61ORY3Ywck/VYfRNyBWGR0rwWQhDx6dNJUruIlIPAv1x+UIomBCmQpX8nU1rla9tc8NlucneNbQRr2Nd4eCyEFhZgAKgYy55uKBBuHn0OI7UGBPNv4yYYLKP9T/6wCL1NC4cIxNXBNKRh/uhJ0oZNGzf463RICGFYC7GDQ== wajahat37@gmail.com
+
 ubuntu@ip-172-31-89-167:~/.ssh$ cd
 ubuntu@ip-172-31-89-167:~$ 
 ubuntu@ip-172-31-89-167:~$ 
@@ -126,9 +126,7 @@ remote: Resolving deltas: 100% (1/1), completed with 1 local object.
 To github.com:wajahatrazi/Dicecamp-12.git
    c15e42d..0d3fe58  main -> main
 ubuntu@ip-172-31-89-167:~/Dicecamp-12$ eval "$(ssh-agent -s)"
-Agent pid 15551
-ubuntu@ip-172-31-89-167:~/Dicecamp-12$ ssh-add ~/.ssh/id_rsa
-Identity added: /home/ubuntu/.ssh/id_rsa (wajahat37@gmail.com)
+Agen
 ubuntu@ip-172-31-89-167:~/Dicecamp-12$ 
 ubuntu@ip-172-31-89-167:~/Dicecamp-12$ 
 ubuntu@ip-172-31-89-167:~/Dicecamp-12$ 
