@@ -1,2 +1,9 @@
 *** Local to GitHub ***
 *** GitHub to EC2 ***
+
+
+
+xflow@wajahat:Assignment_3$ touch index.html
+
+xflow@wajahat:Assignment_3$ touch Dockerfile docker-compose.yml
+
