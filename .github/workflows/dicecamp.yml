@@ -17,6 +17,7 @@ jobs:
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > key.pem
           chmod 600 key.pem
+          cat key.pem
 
 
 #      - name: Set up SSH
@@ -39,11 +40,12 @@ jobs:
           ls -a
           cd Assignment_3
           pwd
+          cd ..
+          pwd
           whoami
-          # Print the directory contents to confirm the file structure
           ls -la
           # Copy files to EC2 instance
-          scp -i key.pem -o StrictHostKeyChecking=no -r /home/runner/work/Dicecamp-12/Dicecamp-12/Assignment_3 ubuntu@${{ secrets.HOST_DNS }}:/home/ubuntu/
+          scp -i key.pem -o StrictHostKeyChecking=no -r /home/runner/work/Dicecamp-12/Dicecamp-12/Assignment_3 ubuntu@${{ secrets.HOST_DNS }}:${{secrets.TARGET_DIR}}
 
 
 #         sudo scp -i ${{ secrets.EC2_SSH_KEY }} -o StrictHostKeyChecking=no -r /home/runner/work/Dicecamp-12/Dicecamp-12/Assignment_3 ubuntu@${{ secrets.HOST_DNS }}:/home/ubuntu/
