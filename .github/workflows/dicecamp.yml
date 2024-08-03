@@ -1,38 +1,51 @@
-name: Deploy on EC2
+name: Deploy to EC2
 
 on:
   push:
     branches:
-      - "main"
+      - main
 
 jobs:
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up SSH
-        run: |
-          echo "${{ secrets.EC2_SSH_KEY }}" > key.pem
-          chmod 600 key.pem
+    - name: Set up SSH key
+      uses: webfactory/ssh-agent@v0.6.0
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-      - name: Prepare deployment script
-        run: |
-          echo "#!/bin/bash" > deploy.sh
-          echo "sudo apt update && sudo apt upgrade -y" >> deploy.sh
-          echo "docker stop php-ec2-git || true" >> deploy.sh
-          echo "docker rm php-ec2-git || true" >> deploy.sh
-          echo "docker rmi assignment3-php-image || true" >> deploy.sh
-          echo "docker-compose up -d --build" >> deploy.sh
-          chmod +x deploy.sh
+    - name: Update and upgrade packages
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }} << 'EOF'
+          sudo apt-get update
+          sudo apt-get upgrade -y
+        EOF
 
-      - name: Dploy Application
-        run: |
-          scp -i key.pem -o StrictHostKeyChecking=no deploy.sh ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }}:/home/ubuntu
-          ssh -i key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST_DNS }} 'sudo bash /home/ubuntu/deploy.sh'
-      
-      - name: Clean Up
-        run: |
-          rm -f key.pem
+    - name: Install or update Docker
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }} << 'EOF'
+          sudo apt-get install -y docker.io
+        EOF
+
+    - name: Stop and remove existing Docker container
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }} << 'EOF'
+          docker stop php-ec2-git || true
+          docker rm php-ec2-git || true
+        EOF
+
+    - name: Build Docker image
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }} << 'EOF'
+          docker build -t assignment3-php-image:latest .
+        EOF
+
+    - name: Run Docker container
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }} << 'EOF'
+          docker run -d --name php-ec2-git -p 80:80 assignment3-php-image:latest
+        EOF
