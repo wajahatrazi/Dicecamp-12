@@ -28,8 +28,8 @@ jobs:
           ssh-keyscan -H ${{ secrets.HOST_DNS }} >> ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
-#      - name: List files in the repository
-#        run: ls -R
+      - name: List files in the repository
+        run: ls -R
 
       - name: Copy files to the EC2 Instance
         run: |
