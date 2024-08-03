@@ -46,6 +46,7 @@ jobs:
           ls -la
           # Copy files to EC2 instance
           scp -i key.pem -o StrictHostKeyChecking=no -r /home/runner/work/Dicecamp-12/Dicecamp-12/Assignment_3 ubuntu@${{ secrets.HOST_DNS }}:${{secrets.TARGET_DIR}}
+          pwd
 
       - name: Deploy Docker Container on EC2 Instance
         run: |
