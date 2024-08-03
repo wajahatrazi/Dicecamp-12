@@ -13,3 +13,6 @@ setup a private ssh key for Github
 
 go to github & add secrets
 
+![alt text](image.png)
+
+![alt text](image-1.png)

@@ -1,5 +1,6 @@
 services:
   php-server:
+    container_name: php-ec2-git
     build:
       context: .
       dockerfile: Dockerfile
