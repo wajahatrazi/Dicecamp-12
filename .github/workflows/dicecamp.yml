@@ -28,12 +28,12 @@ jobs:
           ssh-keyscan -H ${{ secrets.HOST_DNS }} >> ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
-      - name: List files in the repository
-        run: ls -R
+#      - name: List files in the repository
+#        run: ls -R
 
-#      - name: Copy files to the EC2 Instance
-#        run: |
-#         scp -i ${{ secrets.EC2_SSH_KEY }} -o StrictHostKeyChecking=no -r ./Dicecamp-12/Assignment_3/ ubuntu@${{ secrets.HOST_DNS }}:/home/ubuntu/
+      - name: Copy files to the EC2 Instance
+        run: |
+         scp -i ${{ secrets.EC2_SSH_KEY }} -o StrictHostKeyChecking=no -r ./Assignment_3/ ubuntu@${{ secrets.HOST_DNS }}:/home/ubuntu/
 #        scp -i key.pem -o StrictHostKeyChecking=no  -r ./Dicecamp-12/Assignment_3/ ubuntu@${{ secrets.HOST_DNS }}:/home/ubuntu/
 
 
