@@ -1,51 +1,67 @@
-name: Deploy to EC2
+name: Deploy on EC2
 
 on:
   push:
     branches:
-      - main
+      - "main"
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout source
+        uses: actions/checkout@v2
 
-    - name: Set up SSH key
-      uses: webfactory/ssh-agent@v0.6.0
-      with:
-        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.6.0
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+          
+      - name: Adding EC2 to Known Hosts
+        run: |
+          ssh-keyscan -H ${{ secrets.HOST_DNS }} >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
 
-    - name: Update and upgrade packages
-      run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }} << 'EOF'
-          sudo apt-get update
-          sudo apt-get upgrade -y
-        EOF
+      - name: Copy files to the EC2 Instance
+        run: |
+          scp -i ${{ secrets.EC2_SSH_KEY }} -o StrictHostKeyChecking=no -r ./Dicecamp-12/Assignment_3/ ubuntu@${{ secrets.HOST_DNS }}:/home/ubuntu/
 
-    - name: Install or update Docker
-      run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }} << 'EOF'
-          sudo apt-get install -y docker.io
-        EOF
+#      - name: Deploy Docker Container on EC2 instances
+#        run: |
+#          ssh -i ${{ secrets.EC2_SSH_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST_DNS }} << 'EOF'
+#            cd /home/ubuntu/Assignment_3/
+#            docker-compose down || true
+#            docker-compose build
+#            docker-compose up -d
+#          EOF
 
-    - name: Stop and remove existing Docker container
-      run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }} << 'EOF'
-          docker stop php-ec2-git || true
-          docker rm php-ec2-git || true
-        EOF
+#      - name: Verification
+#        run: |
+#          curl http://${{ secrets.HOST_DNS }}/index.html
 
-    - name: Build Docker image
-      run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }} << 'EOF'
-          docker build -t assignment3-php-image:latest .
-        EOF
+#      - name: Set up SSH
+#        run: |
+#          echo "${{ secrets.EC2_SSH_KEY }}" > key.pem
+#          chmod 600 key.pem
 
-    - name: Run Docker container
-      run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }} << 'EOF'
-          docker run -d --name php-ec2-git -p 80:80 assignment3-php-image:latest
-        EOF
+      
+
+ #     - name: Prepare deployment script
+ #       run: |
+ #         echo "#!/bin/bash" > deploy.sh
+ #         echo "sudo apt update && sudo apt upgrade -y" >> deploy.sh
+ #         echo "docker stop php-ec2-git || true" >> deploy.sh
+ #         echo "docker rm php-ec2-git || true" >> deploy.sh
+ #         echo "docker rmi assignment3-php-image || true" >> deploy.sh
+ #         echo "docker-compose up -d --build" >> deploy.sh
+ #         chmod +x deploy.sh
+
+#      - name: SCP Files to Deploy Application
+#        run: |
+#          scp -i key.pem -o StrictHostKeyChecking=no deploy.sh ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }}:/home/ubuntu
+#          ssh -i key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST_DNS }} 'sudo bash /home/ubuntu/deploy.sh'
+      
+#      - name: Clean Up
+#        run: |
+#          rm -f key.pem
