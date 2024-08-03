@@ -13,25 +13,29 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v2
 
-      - name: Set up SSH
-        run: |
-          echo "${{ secrets.EC2_SSH_KEY }}" > key.pem
-          chmod 600 key.pem
-
 #      - name: Set up SSH
-#        uses: webfactory/ssh-agent@v0.6.0
-#        with:
-#          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
-          
-#      - name: Adding EC2 to Known Hosts
 #        run: |
-#          ssh-keyscan -H ${{ secrets.HOST_DNS }} >> ~/.ssh/known_hosts
-#          chmod 600 ~/.ssh/known_hosts
+#          echo "${{ secrets.EC2_SSH_KEY }}" > key.pem
+#          chmod 600 key.pem
 
-      - name: Copy files to the EC2 Instance
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.6.0
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+          
+      - name: Adding EC2 to Known Hosts
         run: |
-          scp -i key.pem -o StrictHostKeyChecking=no  -r ./Dicecamp-12/Assignment_3/ ubuntu@${{ secrets.HOST_DNS }}:/home/ubuntu/
+          ssh-keyscan -H ${{ secrets.HOST_DNS }} >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: List files in the repository
+        run: ls -R
+
+#      - name: Copy files to the EC2 Instance
+#        run: |
 #         scp -i ${{ secrets.EC2_SSH_KEY }} -o StrictHostKeyChecking=no -r ./Dicecamp-12/Assignment_3/ ubuntu@${{ secrets.HOST_DNS }}:/home/ubuntu/
+#        scp -i key.pem -o StrictHostKeyChecking=no  -r ./Dicecamp-12/Assignment_3/ ubuntu@${{ secrets.HOST_DNS }}:/home/ubuntu/
+
 
 #      - name: Deploy Docker Container on EC2 instances
 #        run: |
