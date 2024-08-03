@@ -1,1 +1,40 @@
+name: Deploy on EC2
 
+on:
+  push:
+    branches:
+      - "main"
+
+env:
+  host: ${{secrets.HOST_DNS}}
+  username: ${{secrets.USERNAME}}
+  key: ${{secrets.EC2_SSH_KEY}}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Prepare deployment script
+        run: |
+          echo "#!/bin/bash" > deploy.sh
+          echo "sudo apt update && sudo apt upgrade -y" >> deploy.sh
+          echo "docker stop php-ec2-git || true" >> deploy.sh
+          echo "docker rm php-ec2-git || true" >> deploy.sh
+          echo "cd ~/app" >> deploy.sh
+          echo "docker-compose up -d --build" >> deploy.sh
+          chmod +x deploy.sh
+
+      - name: Copy files and deployment script to AWS EC2
+        run: |
+          scp -i ${{secrets.EC2_SSH_KEY}} -r . ${{secrets.USERNAME}}@${{secrets.HOST_DNS}}:~/app
+          scp -i ${{secrets.EC2_SSH_KEY}} deploy.sh ${{secrets.USERNAME}}@${{secrets.HOST_DNS}}:~/
+
+      - name: Run deployment script on AWS EC2
+        run: |
+          ssh -i ${{secrets.EC2_SSH_KEY}} ${{secrets.USERNAME}}@${{secrets.HOST_DNS}} << 'EOF'
+          ./deploy.sh
+          EOF

@@ -1,6 +1,7 @@
 services:
   php-server:
     container_name: php-ec2-git
+    image: assignment3-php-image
     build:
       context: .
       dockerfile: Dockerfile
