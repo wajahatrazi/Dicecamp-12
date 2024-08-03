@@ -14,9 +14,14 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.6.0
-        with:
-          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > key.pem
+          chmod 600 key.pem
+
+#      - name: Set up SSH
+#        uses: webfactory/ssh-agent@v0.6.0
+#        with:
+#          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
           
       - name: Adding EC2 to Known Hosts
         run: |
@@ -25,7 +30,8 @@ jobs:
 
       - name: Copy files to the EC2 Instance
         run: |
-          scp -i ${{ secrets.EC2_SSH_KEY }} -o StrictHostKeyChecking=no -r ./Dicecamp-12/Assignment_3/ ubuntu@${{ secrets.HOST_DNS }}:/home/ubuntu/
+          scp -i key.pem -o StrictHostKeyChecking=no  -r ./Dicecamp-12/Assignment_3/ ubuntu@${{ secrets.HOST_DNS }}:/home/ubuntu/
+#         scp -i ${{ secrets.EC2_SSH_KEY }} -o StrictHostKeyChecking=no -r ./Dicecamp-12/Assignment_3/ ubuntu@${{ secrets.HOST_DNS }}:/home/ubuntu/
 
 #      - name: Deploy Docker Container on EC2 instances
 #        run: |
