@@ -28,10 +28,11 @@ jobs:
           echo "docker-compose up -d --build" >> deploy.sh
           chmod +x deploy.sh
 
-      - name: Copy script to EC2
+      - name: Dploy Application
         run: |
-          scp -i key.pem -o StrictHostKeyChecking=no deploy.sh ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }}:~/
-
-      - name: Run script on EC2
+          scp -i key.pem -o StrictHostKeyChecking=no deploy.sh ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }}:/home/ubuntu
+          ssh -i key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST_DNS }} 'sudo bash /home/ubuntu/deploy.sh'
+      
+      - name: Clean Up
         run: |
-          ssh -i key.pem -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }} 'bash ~/deploy.sh'
+          rm -f key.pem
