@@ -1,9 +1,9 @@
 services:
   php-server:
-    container_name: php-ec2-git
-    image: assignment3-php-image
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: php-ec2-git
+    image: assignment3-php-image
     ports:
       - "5000:80"

@@ -5,18 +5,18 @@ on:
     branches:
       - "main"
 
-env:
-  host: ${{secrets.HOST_DNS}}
-  username: ${{secrets.USERNAME}}
-  key: ${{secrets.EC2_SSH_KEY}}
-
 jobs:
   deploy:
     runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > key.pem
+          chmod 600 key.pem
 
       - name: Prepare deployment script
         run: |
@@ -24,17 +24,14 @@ jobs:
           echo "sudo apt update && sudo apt upgrade -y" >> deploy.sh
           echo "docker stop php-ec2-git || true" >> deploy.sh
           echo "docker rm php-ec2-git || true" >> deploy.sh
-          echo "cd ~/app" >> deploy.sh
+          echo "docker rmi assignment3-php-image || true" >> deploy.sh
           echo "docker-compose up -d --build" >> deploy.sh
           chmod +x deploy.sh
 
-      - name: Copy files and deployment script to AWS EC2
+      - name: Copy script to EC2
         run: |
-          scp -i ${{secrets.EC2_SSH_KEY}} -r . ${{secrets.USERNAME}}@${{secrets.HOST_DNS}}:~/app
-          scp -i ${{secrets.EC2_SSH_KEY}} deploy.sh ${{secrets.USERNAME}}@${{secrets.HOST_DNS}}:~/
+          scp -i key.pem -o StrictHostKeyChecking=no deploy.sh ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }}:~/
 
-      - name: Run deployment script on AWS EC2
+      - name: Run script on EC2
         run: |
-          ssh -i ${{secrets.EC2_SSH_KEY}} ${{secrets.USERNAME}}@${{secrets.HOST_DNS}} << 'EOF'
-          ./deploy.sh
-          EOF
+          ssh -i key.pem -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }} 'bash ~/deploy.sh'
