@@ -1,0 +1,9 @@
+Devop Assigment 4:
+
+
+Install Minikube any other Kubernetes platform
+Run a simple Kubernetes cluster on it 
+
+Please refer to the below link:
+
+github.com/wajahatrazi/Dicecamp-12
