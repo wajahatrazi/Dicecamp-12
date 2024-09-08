@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  client:
+    build: .
+    ports:
+      - "8000:8000"  # Exposing the FastAPI client app on port 8000
+    volumes:
+      - clientvol:/clientdata  # Volume to persist client-side data
+
+volumes:
+  clientvol:

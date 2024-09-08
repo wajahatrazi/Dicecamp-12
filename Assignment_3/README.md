@@ -1,35 +1,44 @@
-## Successful Setup of CI & CD Pipeline using GitHub Actions. 
+# CI & CD Pipeline Setup using GitHub Actions
 
-Deployed an index.html application leveraging Docker Engine running PHP Apache. 
+Deployed an `index.html` application leveraging Docker Engine running PHP Apache on an AWS EC2 instance using GitHub Actions for automation.
 
+## Project Overview
 
-xflow@wajahat:Assignment_3$ touch index.html
+This project sets up a continuous integration and continuous delivery (CI/CD) pipeline to deploy a simple `index.html` web application on an EC2 instance using Docker. The app runs on a containerized PHP Apache server.
 
-xflow@wajahat:Assignment_3$ touch Dockerfile docker-compose.yml
+## Steps to Set Up
 
-Launch an EC2 instance
+1. **Create Files**:
+    ```bash
+    $ touch index.html Dockerfile docker-compose.yml
+    ```
 
-![alt text](image-6.png)
+2. **Launch EC2 Instance**:
+    - Create an AWS EC2 instance.
+    - Set inbound rules for custom TCP on port 5000.
 
-setup a private ssh key for Github
+    ![EC2 Instance](image-6.png)
 
-Set inbound rules having custom tcp 5000
+3. **Set Up Private SSH Key for GitHub**:
+    - Generate an SSH key and add the private key to GitHub Secrets.
 
-go to github & add secrets
+4. **Add GitHub Secrets**:
+    Go to your GitHub repository and add the following secrets:
+    - `EC2_SSH_KEY`: Your private SSH key.
+    - `HOST_DNS`: Public IP or DNS of your EC2 instance.
+    - `USERNAME`: Username for the EC2 instance (e.g., `ubuntu`).
 
-![alt text](image.png)
+5. **Challenges**:
+    - Public IP changes on AWS Free-tier instances, so you'll need to update the `HOST_DNS` GitHub secret each time the EC2 instance is restarted.
 
-Challanges:
-- Using Free-tier, the public IP changes, for which you will have to update the GitHub secrets. 
+    ![GitHub Secrets](image-2.png)
 
-![alt text](image-1.png)
+## Docker Configuration
 
-https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action
+### Dockerfile:
+```dockerfile
+FROM php:7.4-apache
 
-![alt text](image-2.png)
+COPY . /var/www/html
 
-![alt text](image-3.png)
-
-![alt text](image-4.png)
-
-![alt text](image-5.png)
+EXPOSE 80
